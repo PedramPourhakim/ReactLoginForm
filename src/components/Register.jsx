@@ -3,6 +3,7 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import Formikcontrol from "./formikComponents/FormikControl";
 import { DatePicker } from "zaman";
+import axios from "axios";
 
 const initialValues = {
   user_name: "",
@@ -14,8 +15,15 @@ const initialValues = {
   confirm_password: "",
   auth_mode: "mobile",
   date: "",
+  image : null
 };
 const onSubmit = (values) => {
+  let formData = new FormData();
+  formData.append('user_name' , values.user_name)
+  formData.append('mobile' , values.mobile)
+  formData.append('password' , values.password)
+  formData.append('image' , values.image)
+  axios.post('url' , formData , { headers:{ 'Content-Type' : 'multipart/form-data'}})
   alert("ثبت نام انجام شد");
 };
 const validationSchema = Yup.object({
@@ -51,6 +59,10 @@ const validationSchema = Yup.object({
     "فقط از حروف فارسی و لاتین و اعداد و @ : - _ . استفاده کنید"
   ),
   date: Yup.string().required("لطفا این قسمت را پر کنید"),
+  image: Yup.mixed()
+  .required('لطفا این قسمت را پر کنید')
+  .test("filesize" , "حجم فایل نمیتواند بیشتر از 500 کیلوبایت باشد" , value=> value && value.size <= (500*1024))
+  .test("format" , "فرمت فایل باید jpg باشد" , value=> value && value.type === ("image/jpeg" || "image/png"))
 });
 
 const authModeValues = [
@@ -147,6 +159,13 @@ const Register = () => {
                     name="date"
                     icon="fa fa-calendar"
                     label="تاریخ تولد"
+                  /> 
+                  <Formikcontrol
+                    formik={formik}
+                    control="file"
+                    name="image"
+                    icon="fa fa-file"
+                    label="تصویر کاربر"
                   />
                   {/* <DatePicker onClickSubmitButton={handleSetData} /> */}
                   <div className="container-login100-form-btn">
