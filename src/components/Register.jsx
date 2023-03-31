@@ -62,7 +62,7 @@ const validationSchema = Yup.object({
   image: Yup.mixed()
   .required('لطفا این قسمت را پر کنید')
   .test("filesize" , "حجم فایل نمیتواند بیشتر از 500 کیلوبایت باشد" , value=> value && value.size <= (500*1024))
-  .test("format" , "فرمت فایل باید jpg باشد" , value=> value && value.type === ("image/jpeg" || "image/png"))
+  .test("format" , "فرمت فایل باید jpg باشد" , value=> value && (value.type === "image/jpeg" || value.type === "image/png"))
 });
 
 const authModeValues = [
